@@ -31,6 +31,38 @@ app.get("/movies", (req, res) => {
   res.json(movies);
 });
 
+app.get("/result", (req, res) => {
+  const resultados = movies.map((movie) => ({
+    id: movie.id,
+    title: movie.title,
+    votes: movie.votes,
+  }));
+  res.json(resultados);
+});
+
+app.get("/movies/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const movie = movies.find((m) => m.id == id);
+  if (!movie) {
+    return res
+      .status(404)
+      .json({ mensaje: `No existe la película con id ${req.params.id}` });
+  }
+  res.json(movie);
+});
+
+app.post("/vote/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const movie = movies.find((m) => m.id == id);
+    if (!movie) {
+    return res
+        .status(404)        
+        .json({ mensaje: `No existe la película con id ${req.params.id}` });
+  }
+  movie.votes++;
+    res.json({ mensaje: `Voto registrado para la película ${movie.title}` });
+});
+
 app.use((req, res) => {
   res
     .status(404)
